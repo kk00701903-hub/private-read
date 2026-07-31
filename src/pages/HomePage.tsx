@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
+import { InstallPwa } from '../components/InstallPwa'
 import { NovelCard } from '../components/NovelCard'
 import { useNovels } from '../hooks/useNovels'
 import { useReadingProgress } from '../hooks/useReader'
+import { usePwaInstall } from '../hooks/usePwaInstall'
 
 export function HomePage() {
   const { data, error, loading } = useNovels()
   const { progress } = useReadingProgress()
+  const { installed } = usePwaInstall()
 
   return (
     <div className="page home-page">
@@ -13,6 +16,11 @@ export function HomePage() {
         <p className="brand">리드</p>
         <h1>오늘의 이야기</h1>
         <p className="lede">회차 MD를 등록하면 바로 읽을 수 있어요.</p>
+        {!installed && (
+          <div className="hero-install">
+            <InstallPwa variant="button" force />
+          </div>
+        )}
       </header>
 
       {loading && <p className="state">불러오는 중…</p>}

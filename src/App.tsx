@@ -1,10 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { BottomNav } from './components/BottomNav'
+import { InstallPwa } from './components/InstallPwa'
 import { HomePage } from './pages/HomePage'
 import { LibraryPage } from './pages/LibraryPage'
 import { NovelPage } from './pages/NovelPage'
 import { ReaderPage } from './pages/ReaderPage'
 import { SettingsPage } from './pages/SettingsPage'
+import './hooks/usePwaInstall'
 
 function Shell() {
   const location = useLocation()
@@ -20,7 +22,12 @@ function Shell() {
         <Route path="/novel/:slug/ep/:episodeId" element={<ReaderPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {!isReader && <BottomNav />}
+      {!isReader && (
+        <>
+          <InstallPwa variant="banner" />
+          <BottomNav />
+        </>
+      )}
     </div>
   )
 }

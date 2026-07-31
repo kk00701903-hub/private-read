@@ -1,3 +1,4 @@
+import { InstallPwa } from '../components/InstallPwa'
 import { useReaderSettings } from '../hooks/useReader'
 
 export function SettingsPage() {
@@ -9,6 +10,8 @@ export function SettingsPage() {
         <h1>설정</h1>
         <p className="lede">읽기 기본값과 작품 등록 안내</p>
       </header>
+
+      <InstallPwa variant="card" force />
 
       <section className="settings-block">
         <h2>기본 읽기 설정</h2>
