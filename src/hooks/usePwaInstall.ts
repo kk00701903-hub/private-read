@@ -5,43 +5,62 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
+declare global {
+  interface Window {
+    __pwaDeferredPrompt?: BeforeInstallPromptEvent | null
+  }
+}
+
 const DISMISS_KEY = 'read-pwa:install-dismissed'
 
 function isStandalone(): boolean {
   if (typeof window === 'undefined') return false
   const mq = window.matchMedia('(display-mode: standalone)').matches
-  const iosStandalone = 'standalone' in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone)
+  const iosStandalone =
+    'standalone' in navigator &&
+    Boolean((navigator as Navigator & { standalone?: boolean }).standalone)
   return mq || iosStandalone
 }
 
 function isIos(): boolean {
   if (typeof navigator === 'undefined') return false
-  return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+  return (
+    /iphone|ipad|ipod/i.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  )
 }
 
-let deferredPrompt: BeforeInstallPromptEvent | null = null
+function isAndroid(): boolean {
+  return typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent)
+}
+
+function getDeferred(): BeforeInstallPromptEvent | null {
+  return (typeof window !== 'undefined' && window.__pwaDeferredPrompt) || null
+}
+
 const listeners = new Set<() => void>()
 
 function notify() {
   listeners.forEach((fn) => fn())
 }
 
-// Capture early — before React mounts can miss the event
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault()
-    deferredPrompt = e as BeforeInstallPromptEvent
+    window.__pwaDeferredPrompt = e as BeforeInstallPromptEvent
     notify()
   })
+  window.addEventListener('pwa-install-available', () => notify())
   window.addEventListener('appinstalled', () => {
-    deferredPrompt = null
+    window.__pwaDeferredPrompt = null
     notify()
   })
 }
 
+export type InstallGuideKind = 'ios' | 'android' | 'desktop' | null
+
 export function usePwaInstall() {
-  const [canPrompt, setCanPrompt] = useState(() => deferredPrompt != null)
+  const [canPrompt, setCanPrompt] = useState(() => getDeferred() != null)
   const [installed, setInstalled] = useState(() => isStandalone())
   const [dismissed, setDismissed] = useState(() => {
     try {
@@ -50,15 +69,26 @@ export function usePwaInstall() {
       return false
     }
   })
-  const [iosGuideOpen, setIosGuideOpen] = useState(false)
+  const [guide, setGuide] = useState<InstallGuideKind>(null)
+  const [swReady, setSwReady] = useState(false)
 
   useEffect(() => {
     const sync = () => {
-      setCanPrompt(deferredPrompt != null)
+      setCanPrompt(getDeferred() != null)
       setInstalled(isStandalone())
     }
     listeners.add(sync)
     sync()
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready
+        .then(() => {
+          setSwReady(true)
+          sync()
+        })
+        .catch(() => setSwReady(false))
+    }
+
     return () => {
       listeners.delete(sync)
     }
@@ -67,7 +97,7 @@ export function usePwaInstall() {
   const dismiss = useCallback(() => {
     localStorage.setItem(DISMISS_KEY, '1')
     setDismissed(true)
-    setIosGuideOpen(false)
+    setGuide(null)
   }, [])
 
   const clearDismiss = useCallback(() => {
@@ -76,39 +106,41 @@ export function usePwaInstall() {
   }, [])
 
   const install = useCallback(async () => {
-    if (isIos() && !isStandalone()) {
-      setIosGuideOpen(true)
-      return { outcome: 'ios-guide' as const }
-    }
-
-    if (!deferredPrompt) {
-      window.alert(
-        '지금 바로 설치할 수 없습니다.\nChrome/Edge 모바일에서 사이트를 연 뒤 다시 시도하거나, 브라우저 메뉴의 "앱 설치" / "홈 화면에 추가"를 사용하세요.',
-      )
-      return { outcome: 'unavailable' as const }
-    }
-
-    const promptEvent = deferredPrompt
-    await promptEvent.prompt()
-    const choice = await promptEvent.userChoice
-    if (choice.outcome === 'accepted') {
-      deferredPrompt = null
-      setCanPrompt(false)
+    if (isStandalone()) {
       setInstalled(true)
+      return { outcome: 'installed' as const }
     }
-    return { outcome: choice.outcome }
-  }, [])
 
-  const showInstallUi = !installed && (canPrompt || isIos())
+    const deferred = getDeferred()
+    if (deferred) {
+      await deferred.prompt()
+      const choice = await deferred.userChoice
+      if (choice.outcome === 'accepted') {
+        window.__pwaDeferredPrompt = null
+        setCanPrompt(false)
+        setInstalled(true)
+        setGuide(null)
+      }
+      return { outcome: choice.outcome }
+    }
+
+    // Native prompt 없음 → 수동 안내
+    if (isIos()) setGuide('ios')
+    else if (isAndroid()) setGuide('android')
+    else setGuide('desktop')
+
+    return { outcome: 'manual' as const }
+  }, [])
 
   return {
     canPrompt,
     installed,
     dismissed,
-    showInstallUi,
+    swReady,
     isIos: isIos(),
-    iosGuideOpen,
-    setIosGuideOpen,
+    isAndroid: isAndroid(),
+    guide,
+    setGuide,
     install,
     dismiss,
     clearDismiss,

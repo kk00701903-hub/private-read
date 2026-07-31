@@ -1,20 +1,18 @@
-import { usePwaInstall } from '../hooks/usePwaInstall'
+import { usePwaInstall, type InstallGuideKind } from '../hooks/usePwaInstall'
 
 type Props = {
-  /** floating banner above bottom nav */
   variant?: 'banner' | 'card' | 'button'
-  /** ignore previous dismiss (settings) */
   force?: boolean
 }
 
 export function InstallPwa({ variant = 'banner', force = false }: Props) {
   const {
-    showInstallUi,
+    canPrompt,
     dismissed,
     installed,
     isIos,
-    iosGuideOpen,
-    setIosGuideOpen,
+    guide,
+    setGuide,
     install,
     dismiss,
     clearDismiss,
@@ -32,23 +30,6 @@ export function InstallPwa({ variant = 'banner', force = false }: Props) {
     return null
   }
 
-  if (!showInstallUi) {
-    if (variant === 'card') {
-      return (
-        <section className="settings-block install-card">
-          <h2>앱 설치</h2>
-          <p className="install-hint">
-            설치 준비가 되면 여기에 버튼이 나타납니다. Chrome/Edge 모바일에서 다시 열어보세요.
-          </p>
-          <button type="button" className="primary-btn install-btn" onClick={() => void install()}>
-            앱으로 설치
-          </button>
-        </section>
-      )
-    }
-    return null
-  }
-
   if (!force && dismissed && variant === 'banner') return null
 
   const onInstall = () => {
@@ -56,13 +37,19 @@ export function InstallPwa({ variant = 'banner', force = false }: Props) {
     void install()
   }
 
+  const statusHint = canPrompt
+    ? '버튼을 누르면 설치 창이 열립니다.'
+    : isIos
+      ? 'iPhone은 Safari 공유 메뉴로 추가합니다.'
+      : '버튼을 누르면 설치 방법을 안내합니다.'
+
   if (variant === 'button') {
     return (
       <>
         <button type="button" className="primary-btn install-btn" onClick={onInstall}>
           앱으로 설치
         </button>
-        {iosGuideOpen && <IosGuide onClose={() => setIosGuideOpen(false)} />}
+        {guide && <InstallGuide kind={guide} onClose={() => setGuide(null)} />}
       </>
     )
   }
@@ -72,16 +59,12 @@ export function InstallPwa({ variant = 'banner', force = false }: Props) {
       <>
         <section className="settings-block install-card">
           <h2>앱 설치</h2>
-          <p>
-            {isIos
-              ? 'Safari 공유 메뉴에서 홈 화면에 추가할 수 있어요.'
-              : '홈 화면에 추가하면 앱처럼 빠르게 열 수 있어요.'}
-          </p>
+          <p>{statusHint}</p>
           <button type="button" className="primary-btn install-btn" onClick={onInstall}>
             앱으로 설치
           </button>
         </section>
-        {iosGuideOpen && <IosGuide onClose={() => setIosGuideOpen(false)} />}
+        {guide && <InstallGuide kind={guide} onClose={() => setGuide(null)} />}
       </>
     )
   }
@@ -91,10 +74,10 @@ export function InstallPwa({ variant = 'banner', force = false }: Props) {
       <aside className="install-banner" role="region" aria-label="앱 설치">
         <div className="install-banner-text">
           <strong>리드 앱 설치</strong>
-          <span>{isIos ? '홈 화면에 추가하세요' : '오프라인에서도 읽을 수 있어요'}</span>
+          <span>{statusHint}</span>
         </div>
         <div className="install-banner-actions">
-          <button type="button" className="ghost-btn" onClick={dismiss} aria-label="닫기">
+          <button type="button" className="ghost-btn" onClick={dismiss}>
             나중에
           </button>
           <button type="button" className="primary-btn install-btn compact" onClick={onInstall}>
@@ -102,34 +85,74 @@ export function InstallPwa({ variant = 'banner', force = false }: Props) {
           </button>
         </div>
       </aside>
-      {iosGuideOpen && <IosGuide onClose={() => setIosGuideOpen(false)} />}
+      {guide && <InstallGuide kind={guide} onClose={() => setGuide(null)} />}
     </>
   )
 }
 
-function IosGuide({ onClose }: { onClose: () => void }) {
+function InstallGuide({ kind, onClose }: { kind: InstallGuideKind; onClose: () => void }) {
+  if (!kind) return null
+
+  const title =
+    kind === 'ios' ? 'iPhone 설치 방법' : kind === 'android' ? 'Android 설치 방법' : 'PC 설치 방법'
+
   return (
-    <div className="settings-sheet" role="dialog" aria-label="iOS 설치 안내">
+    <div className="settings-sheet" role="dialog" aria-label={title}>
       <button type="button" className="sheet-backdrop" aria-label="닫기" onClick={onClose} />
       <div className="sheet-body">
         <header className="sheet-head">
-          <h2>홈 화면에 추가</h2>
+          <h2>{title}</h2>
           <button type="button" className="ghost-btn" onClick={onClose}>
             닫기
           </button>
         </header>
-        <ol className="ios-install-steps">
-          <li>
-            하단 <strong>공유</strong> 버튼(□↑)을 탭하세요
-          </li>
-          <li>
-            <strong>홈 화면에 추가</strong>를 선택하세요
-          </li>
-          <li>
-            <strong>추가</strong>를 누르면 완료됩니다
-          </li>
-        </ol>
-        <p className="install-hint">Safari에서만 설치할 수 있습니다.</p>
+
+        {kind === 'ios' && (
+          <ol className="ios-install-steps">
+            <li>
+              반드시 <strong>Safari</strong>로 이 사이트를 여세요 (크롬/카카오톡 브라우저 X)
+            </li>
+            <li>
+              하단 <strong>공유</strong> 버튼(□↑)을 탭하세요
+            </li>
+            <li>
+              <strong>홈 화면에 추가</strong> → <strong>추가</strong>
+            </li>
+          </ol>
+        )}
+
+        {kind === 'android' && (
+          <ol className="ios-install-steps">
+            <li>
+              <strong>Chrome</strong>으로 이 사이트를 여세요 (카카오톡·인앱 브라우저 X)
+            </li>
+            <li>
+              우측 상단 <strong>⋮ 메뉴</strong>를 탭하세요
+            </li>
+            <li>
+              <strong>앱 설치</strong> 또는 <strong>홈 화면에 추가</strong>를 선택하세요
+            </li>
+            <li>안 보이면 주소창 옆 설치 아이콘을 확인하세요</li>
+          </ol>
+        )}
+
+        {kind === 'desktop' && (
+          <ol className="ios-install-steps">
+            <li>
+              <strong>Chrome</strong> 또는 <strong>Edge</strong>로 열어주세요
+            </li>
+            <li>
+              주소창 오른쪽 <strong>설치</strong> 아이콘(모니터+↓)을 클릭하세요
+            </li>
+            <li>
+              또는 메뉴 → <strong>앱 설치…</strong> / <strong>Install app</strong>
+            </li>
+          </ol>
+        )}
+
+        <p className="install-hint">
+          카카오톡·인스타 등 인앱 브라우저에서는 설치가 안 됩니다. 외부 브라우저로 열어주세요.
+        </p>
       </div>
     </div>
   )

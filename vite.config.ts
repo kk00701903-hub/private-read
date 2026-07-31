@@ -44,28 +44,31 @@ export default defineConfig(({ command }) => {
       spaFallback(),
       VitePWA({
         registerType: 'autoUpdate',
+        injectRegister: false,
         includeAssets: ['favicon.svg', 'novels/**/*', '.nojekyll'],
         manifest: {
+          id: '/private-read/',
           name: '리드 — 웹소설 리더',
           short_name: '리드',
           description: '회차 MD 파일을 모바일에서 읽는 웹소설 리더',
           theme_color: '#0f1419',
           background_color: '#0f1419',
           display: 'standalone',
-          orientation: 'portrait',
-          start_url: './',
-          scope: './',
+          start_url: '/private-read/',
+          scope: '/private-read/',
           lang: 'ko',
           icons: [
             {
               src: 'pwa-192.png',
               sizes: '192x192',
               type: 'image/png',
+              purpose: 'any',
             },
             {
               src: 'pwa-512.png',
               sizes: '512x512',
               type: 'image/png',
+              purpose: 'any',
             },
             {
               src: 'pwa-512.png',
