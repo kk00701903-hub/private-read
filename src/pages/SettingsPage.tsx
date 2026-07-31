@@ -14,6 +14,14 @@ export function SettingsPage() {
       <InstallPwa variant="card" force />
 
       <section className="settings-block">
+        <h2>읽기 기록</h2>
+        <p className="install-hint" style={{ marginTop: 0 }}>
+          읽은 회차와 스크롤 위치는 기기 안 SQLite(IndexedDB)에 저장됩니다. 브라우저 데이터를
+          지우면 함께 삭제됩니다.
+        </p>
+      </section>
+
+      <section className="settings-block">
         <h2>기본 읽기 설정</h2>
         <label className="setting-row">
           <span>글자 크기</span>

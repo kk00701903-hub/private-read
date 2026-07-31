@@ -6,12 +6,15 @@ import { assetUrl } from '../lib/novels'
 export function NovelPage() {
   const { slug = '' } = useParams()
   const { getNovel, loading, error } = useNovels()
-  const { progress } = useReadingProgress()
+  const { progress, ready } = useReadingProgress()
   const novel = getNovel(slug)
-  const lastId = progress[slug]?.episodeId
+  const last = progress[slug]
+  const lastId = last?.episodeId
   const continueEp = novel?.episodes.find((e) => e.id === lastId) ?? novel?.episodes[0]
+  const progressPct =
+    last && lastId ? Math.round((last.scrollRatio || 0) * 100) : 0
 
-  if (loading) return <p className="state page">불러오는 중…</p>
+  if (loading || !ready) return <p className="state page">불러오는 중…</p>
   if (error) return <p className="state error page">{error}</p>
   if (!novel) return <p className="state error page">작품을 찾을 수 없습니다.</p>
 
@@ -42,7 +45,9 @@ export function NovelPage() {
           </div>
           {continueEp && (
             <Link className="primary-btn" to={`/novel/${novel.slug}/ep/${continueEp.id}`}>
-              {lastId ? '이어보기' : '첫 화부터'}
+              {lastId
+                ? `이어보기${progressPct > 0 ? ` · ${progressPct}%` : ''}`
+                : '첫 화부터'}
             </Link>
           )}
         </div>

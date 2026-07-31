@@ -79,7 +79,7 @@ export default defineConfig(({ command }) => {
           ],
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,json,md,woff2}'],
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,json,md,woff2,wasm}'],
           navigateFallback: 'index.html',
         },
       }),

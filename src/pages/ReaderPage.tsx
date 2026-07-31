@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -7,18 +7,30 @@ import { useReaderSettings, useReadingProgress } from '../hooks/useReader'
 import { fetchEpisodeMarkdown, stripFrontmatter } from '../lib/novels'
 import { ReaderSettingsPanel } from '../components/ReaderSettingsPanel'
 
+function scrollMetrics() {
+  const el = document.documentElement
+  const max = Math.max(el.scrollHeight - el.clientHeight, 0)
+  const y = window.scrollY || 0
+  return {
+    scrollY: y,
+    scrollRatio: max > 0 ? Math.min(1, Math.max(0, y / max)) : 0,
+  }
+}
+
 export function ReaderPage() {
   const { slug = '', episodeId = '' } = useParams()
   const navigate = useNavigate()
   const { getNovel, loading: novelsLoading } = useNovels()
   const novel = getNovel(slug)
   const { settings, setSettings } = useReaderSettings()
-  const { saveProgress } = useReadingProgress()
+  const { saveProgress, loadProgress, persistNow, ready } = useReadingProgress()
   const [raw, setRaw] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [chromeVisible, setChromeVisible] = useState(true)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const restoredRef = useRef<string | null>(null)
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const episodeIndex = novel?.episodes.findIndex((e) => e.id === episodeId) ?? -1
   const episode = episodeIndex >= 0 ? novel!.episodes[episodeIndex] : undefined
@@ -35,6 +47,7 @@ export function ReaderPage() {
     let alive = true
     setLoading(true)
     setError(null)
+    restoredRef.current = null
     fetchEpisodeMarkdown(novel, episode.file)
       .then((text) => {
         if (alive) setRaw(text)
@@ -50,13 +63,86 @@ export function ReaderPage() {
     }
   }, [novel, episode])
 
+  // 회차 진입 시 저장 + 스크롤 복원
   useEffect(() => {
-    if (novel && episode) saveProgress(novel.slug, episode.id)
-  }, [novel, episode, saveProgress])
+    if (!ready || !novel || !episode || loading || error) return
+    const key = `${novel.slug}:${episode.id}`
+    if (restoredRef.current === key) return
 
+    let cancelled = false
+    ;(async () => {
+      const saved = await loadProgress(novel.slug)
+      if (cancelled) return
+
+      const sameEpisode = saved?.episodeId === episode.id
+      await saveProgress({
+        novelSlug: novel.slug,
+        episodeId: episode.id,
+        scrollY: sameEpisode ? saved?.scrollY ?? 0 : 0,
+        scrollRatio: sameEpisode ? saved?.scrollRatio ?? 0 : 0,
+      })
+
+      requestAnimationFrame(() => {
+        if (cancelled) return
+        if (sameEpisode && saved && (saved.scrollY > 0 || saved.scrollRatio > 0)) {
+          const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0)
+          const target =
+            saved.scrollY > 0 ? saved.scrollY : Math.round(max * (saved.scrollRatio || 0))
+          window.scrollTo({ top: target, behavior: 'auto' })
+        } else {
+          window.scrollTo({ top: 0, behavior: 'auto' })
+        }
+        restoredRef.current = key
+      })
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [ready, novel, episode, loading, error, loadProgress, saveProgress])
+
+  // 스크롤 위치 저장 (디바운스)
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [episodeId])
+    if (!ready || !novel || !episode || loading) return
+
+    const onScroll = () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+      saveTimer.current = setTimeout(() => {
+        const { scrollY, scrollRatio } = scrollMetrics()
+        void saveProgress({
+          novelSlug: novel.slug,
+          episodeId: episode.id,
+          scrollY,
+          scrollRatio,
+        })
+      }, 300)
+    }
+
+    const onHide = () => {
+      const { scrollY, scrollRatio } = scrollMetrics()
+      void saveProgress({
+        novelSlug: novel.slug,
+        episodeId: episode.id,
+        scrollY,
+        scrollRatio,
+      }).then(() => persistNow())
+    }
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') onHide()
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('pagehide', onHide)
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('pagehide', onHide)
+      document.removeEventListener('visibilitychange', onVisibility)
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+    }
+  }, [ready, novel, episode, loading, saveProgress, persistNow])
 
   if (novelsLoading) return <p className="state page">불러오는 중…</p>
   if (!novel || !episode) {
