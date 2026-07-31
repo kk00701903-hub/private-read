@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-07-31T16:10:54.577Z",
+  "novels": [
+    {
+      "slug": "bam-ui-seojae",
+      "title": "밤의 서재",
+      "author": "예시 작가",
+      "description": "낡은 서재에서 펼쳐지는 이야기. 샘플 작품입니다.",
+      "cover": null,
+      "genre": "판타지",
+      "status": "연재중",
+      "updatedAt": "2026-08-01",
+      "episodeCount": 3,
+      "episodes": [
+        {
+          "id": "001",
+          "file": "001.md",
+          "number": 1,
+          "title": "프롤로그 — 문이 열린다",
+          "wordCount": 202
+        },
+        {
+          "id": "002",
+          "file": "002.md",
+          "number": 2,
+          "title": "1화 — 이름 없는 사서",
+          "wordCount": 216
+        },
+        {
+          "id": "003",
+          "file": "003.md",
+          "number": 3,
+          "title": "2화 — 첫 페이지",
+          "wordCount": 230
+        }
+      ]
+    },
+    {
+      "slug": "subway-cafe",
+      "title": "지하철 끝의 카페",
+      "author": "예시 작가",
+      "description": "막차 이후에도 문이 열리는 지하 카페 이야기.",
+      "cover": null,
+      "genre": "일상",
+      "status": "완결",
+      "updatedAt": "2026-07-20",
+      "episodeCount": 2,
+      "episodes": [
+        {
+          "id": "001",
+          "file": "001.md",
+          "number": 1,
+          "title": "1화 — 막차 다음 역",
+          "wordCount": 184
+        },
+        {
+          "id": "002",
+          "file": "002.md",
+          "number": 2,
+          "title": "2화 — 문장으로 산 커피",
+          "wordCount": 208
+        }
+      ]
+    }
+  ]
+}

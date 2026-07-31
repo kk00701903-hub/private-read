@@ -1,0 +1,30 @@
+{
+  "name": "read-pwa",
+  "private": true,
+  "version": "1.0.0",
+  "homepage": "https://kk00701903-hub.github.io/private-read/",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run generate && vite",
+    "build": "npm run generate && tsc --noEmit -p tsconfig.app.json && vite build",
+    "preview": "vite preview",
+    "generate": "node scripts/generate-index.mjs",
+    "icons": "node scripts/make-icons.mjs"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.6.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.0.0",
+    "workbox-window": "^7.3.0"
+  }
+}
