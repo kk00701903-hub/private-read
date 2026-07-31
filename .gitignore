@@ -1,6 +1,7 @@
 node_modules
 dist
 dist-ssr
+_tmp
 *.local
 .DS_Store
 *.log
