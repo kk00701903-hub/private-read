@@ -709,6 +709,22 @@ input {
   margin-top: 14px;
 }
 
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+.settings-actions .primary-btn {
+  margin-top: 0;
+}
+
+.settings-actions .ghost-btn {
+  color: var(--text);
+}
+
 .novel-cta-row .primary-btn {
   margin-top: 0;
 }
