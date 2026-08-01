@@ -15,6 +15,12 @@ export function BottomNav() {
         </span>
         보관함
       </NavLink>
+      <NavLink to="/edit" className={({ isActive }) => (isActive ? 'active' : undefined)}>
+        <span className="nav-ico" aria-hidden>
+          ✎
+        </span>
+        원고
+      </NavLink>
       <NavLink to="/settings" className={({ isActive }) => (isActive ? 'active' : undefined)}>
         <span className="nav-ico" aria-hidden>
           ⚙

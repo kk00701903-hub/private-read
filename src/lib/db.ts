@@ -70,6 +70,16 @@ function ensureSchema(db: Database) {
       updated_at INTEGER NOT NULL
     );
   `)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS episode_drafts (
+      novel_slug TEXT NOT NULL,
+      episode_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      updated_at INTEGER NOT NULL,
+      PRIMARY KEY (novel_slug, episode_id)
+    );
+  `)
 }
 
 function schedulePersist(db: Database) {
@@ -201,4 +211,119 @@ export async function flushDb(): Promise<void> {
     persistTimer = null
   }
   await saveBytes(db.export())
+}
+
+export type EpisodeDraftRow = {
+  novelSlug: string
+  episodeId: string
+  title: string
+  body: string
+  updatedAt: number
+}
+
+export async function getDraft(
+  novelSlug: string,
+  episodeId: string,
+): Promise<EpisodeDraftRow | null> {
+  const db = await getDb()
+  const stmt = db.prepare(`
+    SELECT novel_slug, episode_id, title, body, updated_at
+    FROM episode_drafts
+    WHERE novel_slug = ? AND episode_id = ?
+  `)
+  stmt.bind([novelSlug, episodeId])
+  const row = stmt.step() ? (stmt.getAsObject() as Record<string, unknown>) : null
+  stmt.free()
+  if (!row) return null
+  return {
+    novelSlug: String(row.novel_slug),
+    episodeId: String(row.episode_id),
+    title: String(row.title ?? ''),
+    body: String(row.body ?? ''),
+    updatedAt: Number(row.updated_at) || 0,
+  }
+}
+
+export async function listDrafts(novelSlug: string): Promise<EpisodeDraftRow[]> {
+  const db = await getDb()
+  const stmt = db.prepare(`
+    SELECT novel_slug, episode_id, title, body, updated_at
+    FROM episode_drafts
+    WHERE novel_slug = ?
+    ORDER BY episode_id ASC
+  `)
+  stmt.bind([novelSlug])
+  const rows: EpisodeDraftRow[] = []
+  while (stmt.step()) {
+    const r = stmt.getAsObject() as Record<string, unknown>
+    rows.push({
+      novelSlug: String(r.novel_slug),
+      episodeId: String(r.episode_id),
+      title: String(r.title ?? ''),
+      body: String(r.body ?? ''),
+      updatedAt: Number(r.updated_at) || 0,
+    })
+  }
+  stmt.free()
+  return rows
+}
+
+export async function listDraftMeta(
+  novelSlug: string,
+): Promise<Record<string, { title: string; updatedAt: number }>> {
+  const db = await getDb()
+  const stmt = db.prepare(`
+    SELECT episode_id, title, updated_at
+    FROM episode_drafts
+    WHERE novel_slug = ?
+  `)
+  stmt.bind([novelSlug])
+  const map: Record<string, { title: string; updatedAt: number }> = {}
+  while (stmt.step()) {
+    const r = stmt.getAsObject() as Record<string, unknown>
+    map[String(r.episode_id)] = {
+      title: String(r.title ?? ''),
+      updatedAt: Number(r.updated_at) || 0,
+    }
+  }
+  stmt.free()
+  return map
+}
+
+export async function upsertDraft(input: {
+  novelSlug: string
+  episodeId: string
+  title: string
+  body: string
+}): Promise<EpisodeDraftRow> {
+  const db = await getDb()
+  const updatedAt = Date.now()
+  db.run(
+    `
+    INSERT INTO episode_drafts (novel_slug, episode_id, title, body, updated_at)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT(novel_slug, episode_id) DO UPDATE SET
+      title=excluded.title,
+      body=excluded.body,
+      updated_at=excluded.updated_at
+  `,
+    [input.novelSlug, input.episodeId, input.title, input.body, updatedAt],
+  )
+  schedulePersist(db)
+  return {
+    novelSlug: input.novelSlug,
+    episodeId: input.episodeId,
+    title: input.title,
+    body: input.body,
+    updatedAt,
+  }
+}
+
+export async function deleteDraft(novelSlug: string, episodeId: string): Promise<void> {
+  const db = await getDb()
+  db.run(`DELETE FROM episode_drafts WHERE novel_slug = ? AND episode_id = ?`, [
+    novelSlug,
+    episodeId,
+  ])
+  schedulePersist(db)
 }

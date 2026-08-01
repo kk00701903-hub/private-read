@@ -44,11 +44,16 @@ export function NovelPage() {
             <span>{novel.episodeCount}화</span>
           </div>
           {continueEp && (
-            <Link className="primary-btn" to={`/novel/${novel.slug}/ep/${continueEp.id}`}>
-              {lastId
-                ? `이어보기${progressPct > 0 ? ` · ${progressPct}%` : ''}`
-                : '첫 화부터'}
-            </Link>
+            <div className="novel-cta-row">
+              <Link className="primary-btn" to={`/novel/${novel.slug}/ep/${continueEp.id}`}>
+                {lastId
+                  ? `이어보기${progressPct > 0 ? ` · ${progressPct}%` : ''}`
+                  : '첫 화부터'}
+              </Link>
+              <Link className="ghost-btn edit-entry-btn" to={`/edit/${novel.slug}`}>
+                원고 편집
+              </Link>
+            </div>
           )}
         </div>
       </header>

@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useNovels } from '../hooks/useNovels'
 import { useReaderSettings, useReadingProgress } from '../hooks/useReader'
-import { fetchEpisodeMarkdown, stripFrontmatter } from '../lib/novels'
+import { fetchEpisodeContent, stripFrontmatter } from '../lib/novels'
 import { ReaderSettingsPanel } from '../components/ReaderSettingsPanel'
 
 function scrollMetrics() {
@@ -48,7 +48,7 @@ export function ReaderPage() {
     setLoading(true)
     setError(null)
     restoredRef.current = null
-    fetchEpisodeMarkdown(novel, episode.file)
+    fetchEpisodeContent(novel, episode.id, episode.file)
       .then((text) => {
         if (alive) setRaw(text)
       })

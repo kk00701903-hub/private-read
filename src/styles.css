@@ -224,7 +224,7 @@ input {
   height: calc(var(--nav-h) + var(--safe-bottom));
   padding: 0 8px var(--safe-bottom);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   background: rgba(15, 20, 25, 0.92);
   backdrop-filter: blur(14px);
   border-top: 1px solid var(--line);
@@ -701,6 +701,203 @@ input {
   padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 84px);
 }
 
+.novel-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.novel-cta-row .primary-btn {
+  margin-top: 0;
+}
+
+.edit-entry-btn {
+  color: var(--text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.novel-picker {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.novel-picker span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.novel-picker select {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.edit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.check-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.export-msg {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(126, 184, 168, 0.12);
+  color: #b7d9cf;
+  font-size: 0.88rem;
+}
+
+.edit-episode-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.edit-episode-list li {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: stretch;
+  border-top: 1px solid var(--line);
+}
+
+.edit-episode-list li:first-child {
+  border-top: none;
+}
+
+.edit-episode-list li.has-draft {
+  background: rgba(126, 184, 168, 0.06);
+}
+
+.edit-check {
+  display: grid;
+  place-items: center;
+}
+
+.edit-ep-link {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 14px 14px 14px 0;
+  color: inherit;
+}
+
+.ep-badge {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.has-draft .ep-badge {
+  color: #b7d9cf;
+  background: rgba(126, 184, 168, 0.16);
+}
+
+.app-shell.is-editor {
+  max-width: 920px;
+}
+
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-bottom: calc(16px + var(--safe-bottom));
+}
+
+.editor-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.editor-top .back-link {
+  margin-bottom: 0;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.editor-meta {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.editor-field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.editor-field span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.editor-field input,
+.editor-field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font: inherit;
+}
+
+.editor-field textarea {
+  min-height: 55dvh;
+  resize: vertical;
+  line-height: 1.7;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92rem;
+}
+
+.editor-field.grow {
+  flex: 1;
+}
+
+.editor-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.editor-nav .nav-ep {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
 @media (min-width: 720px) {
   .novel-detail-head {
     grid-template-columns: 140px 1fr;
@@ -708,5 +905,9 @@ input {
 
   .novel-cover.large {
     width: 140px;
+  }
+
+  .editor-field textarea {
+    min-height: 62dvh;
   }
 }
