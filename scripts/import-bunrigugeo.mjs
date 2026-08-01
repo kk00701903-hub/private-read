@@ -1,14 +1,25 @@
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, statSync } from 'node:fs'
 import { join, basename } from 'node:path'
 
 const root = join(process.cwd())
 const slug = 'bunrigugeo'
 const outDir = join(root, 'public', 'novels', slug)
+const novelsRoot = join(root, 'public', 'novels')
 
-const sources = [
-  join(root, '_tmp', 's1'),
-  join(root, '_tmp', 's2'),
-]
+// 기본: _tmp/new 안의 첫 폴더 또는 _tmp/s1+s2
+function resolveSources() {
+  const newRoot = join(root, '_tmp', 'new')
+  try {
+    const entries = readdirSync(newRoot, { withFileTypes: true })
+    const dirs = entries.filter((d) => d.isDirectory()).map((d) => join(newRoot, d.name))
+    const filesHere = entries.filter((d) => d.isFile() && d.name.endsWith('.md'))
+    if (dirs.length) return dirs
+    if (filesHere.length) return [newRoot]
+  } catch {
+    /* fall through */
+  }
+  return [join(root, '_tmp', 's1'), join(root, '_tmp', 's2')]
+}
 
 function episodeNum(name) {
   const m = name.match(/ep(\d+)/i)
@@ -16,7 +27,6 @@ function episodeNum(name) {
 }
 
 function stripMdTitle(raw) {
-  // remove leading "# N화: title" if present — keep body; frontmatter carries title
   return raw.replace(/^#\s*.+\r?\n+/, '')
 }
 
@@ -27,21 +37,21 @@ function titleFromContent(raw, fallback) {
 }
 
 function titleFromFilename(name) {
-  // ep01_이름을부르는남자.md / s2_ep43_화요일.md
   const base = basename(name, '.md')
   const m = base.match(/ep\d+_(.+)$/i)
-  if (!m) return base
-  // insert spaces lightly? keep as-is from filename; content title preferred
-  return m[1]
+  return m ? m[1] : base
+}
+
+// 기존 novels 전부 제거 후 재생성
+for (const name of readdirSync(novelsRoot)) {
+  if (name === 'index.json') continue
+  const full = join(novelsRoot, name)
+  if (statSync(full).isDirectory()) rmSync(full, { recursive: true, force: true })
 }
 
 mkdirSync(outDir, { recursive: true })
 
-// clear old episode md only
-for (const f of readdirSync(outDir)) {
-  if (f.endsWith('.md')) rmSync(join(outDir, f))
-}
-
+const sources = resolveSources()
 const files = []
 for (const dir of sources) {
   for (const name of readdirSync(dir)) {
@@ -77,7 +87,7 @@ for (const f of files) {
 const meta = {
   title: '딸내미를 건드린 조폭들을 분리수거 중임니다.',
   author: '작자 미상',
-  description: '시즌1·시즌2 전 회차. 딸을 건드린 조폭들을 분리수거하는 이야기.',
+  description: '시즌1·시즌2 전 회차. 딸을 건드린 조폭들을 분리수거하는 이야기. (증량 퇴고본)',
   genre: '액션',
   status: '연재중',
   updatedAt: new Date().toISOString().slice(0, 10),
