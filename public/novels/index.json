@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T11:36:16.896Z",
+  "generatedAt": "2026-08-01T12:18:05.534Z",
   "novels": [
     {
       "slug": "bunrigugeo",
@@ -10,6 +10,7 @@
       "genre": "액션",
       "status": "연재중",
       "updatedAt": "2026-08-01",
+      "contentVersion": "2026-08-01-wipe-drafts",
       "episodeCount": 82,
       "episodes": [
         {

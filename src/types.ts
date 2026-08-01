@@ -15,6 +15,7 @@ export type Novel = {
   genre: string
   status: string
   updatedAt: string | null
+  contentVersion?: string | null
   episodeCount: number
   episodes: Episode[]
 }

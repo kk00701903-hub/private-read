@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchNovelsIndex } from '../lib/novels'
+import { syncContentVersions } from '../lib/db'
 import type { Novel, NovelsIndex } from '../types'
 
 export function useNovels() {
@@ -11,7 +12,8 @@ export function useNovels() {
     let alive = true
     setLoading(true)
     fetchNovelsIndex()
-      .then((idx) => {
+      .then(async (idx) => {
+        await syncContentVersions(idx.novels)
         if (alive) {
           setData(idx)
           setError(null)

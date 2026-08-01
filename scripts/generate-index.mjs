@@ -74,6 +74,7 @@ async function loadNovel(slug) {
     genre: meta.genre || '',
     status: meta.status || '연재중',
     updatedAt: meta.updatedAt || null,
+    contentVersion: meta.contentVersion || meta.updatedAt || null,
     episodeCount: episodes.length,
     episodes,
   }

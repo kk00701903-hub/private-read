@@ -80,6 +80,12 @@ function ensureSchema(db: Database) {
       PRIMARY KEY (novel_slug, episode_id)
     );
   `)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS content_versions (
+      novel_slug TEXT PRIMARY KEY,
+      version TEXT NOT NULL
+    );
+  `)
 }
 
 function schedulePersist(db: Database) {
@@ -326,4 +332,56 @@ export async function deleteDraft(novelSlug: string, episodeId: string): Promise
     episodeId,
   ])
   schedulePersist(db)
+}
+
+export async function deleteAllDrafts(novelSlug?: string): Promise<number> {
+  const db = await getDb()
+  let count = 0
+  if (novelSlug) {
+    const stmt = db.prepare(`SELECT COUNT(*) AS c FROM episode_drafts WHERE novel_slug = ?`)
+    stmt.bind([novelSlug])
+    if (stmt.step()) count = Number((stmt.getAsObject() as { c?: number }).c ?? 0)
+    stmt.free()
+    db.run(`DELETE FROM episode_drafts WHERE novel_slug = ?`, [novelSlug])
+  } else {
+    const stmt = db.prepare(`SELECT COUNT(*) AS c FROM episode_drafts`)
+    if (stmt.step()) count = Number((stmt.getAsObject() as { c?: number }).c ?? 0)
+    stmt.free()
+    db.run(`DELETE FROM episode_drafts`)
+  }
+  schedulePersist(db)
+  await flushDb()
+  return count
+}
+
+/** 서버 contentVersion이 바뀌면 해당 작품의 수정 원고를 전부 삭제 */
+export async function syncContentVersions(
+  novels: { slug: string; contentVersion?: string | null }[],
+): Promise<number> {
+  const db = await getDb()
+  let wiped = 0
+  for (const novel of novels) {
+    const version = novel.contentVersion?.trim()
+    if (!version) continue
+    const stmt = db.prepare(`SELECT version FROM content_versions WHERE novel_slug = ?`)
+    stmt.bind([novel.slug])
+    const prev = stmt.step() ? String((stmt.getAsObject() as { version?: string }).version ?? '') : ''
+    stmt.free()
+    if (prev === version) continue
+    db.run(`DELETE FROM episode_drafts WHERE novel_slug = ?`, [novel.slug])
+    db.run(
+      `
+      INSERT INTO content_versions (novel_slug, version)
+      VALUES (?, ?)
+      ON CONFLICT(novel_slug) DO UPDATE SET version=excluded.version
+    `,
+      [novel.slug, version],
+    )
+    wiped++
+  }
+  if (wiped > 0) {
+    schedulePersist(db)
+    await flushDb()
+  }
+  return wiped
 }
