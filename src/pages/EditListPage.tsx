@@ -130,7 +130,7 @@ export function EditListPage() {
                 <span className="ep-num">{ep.number}화</span>
                 <span className="ep-title">{saved?.title || ep.title}</span>
                 <span className="ep-badge">
-                  {saved ? '수정됨' : '원본'}
+                  {saved ? '각색' : '원본'}
                 </span>
               </Link>
             </li>

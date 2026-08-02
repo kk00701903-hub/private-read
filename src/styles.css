@@ -914,6 +914,118 @@ input {
   color: var(--text);
 }
 
+.editor-hint {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 0.82rem;
+}
+
+.editor-read-body {
+  flex: 1;
+  padding: 8px 4px 24px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg-elevated) 70%, transparent);
+  cursor: text;
+  font-family: var(--font-read);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  word-break: keep-all;
+}
+
+.editor-read-title {
+  margin: 0 0 1em;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.editor-read-body p {
+  margin: 0 0 1em;
+}
+
+.library-section {
+  margin-bottom: 28px;
+}
+
+.library-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.library-section-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.library-count {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.state.compact {
+  padding: 16px 8px;
+}
+
+.adapted-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.adapted-card {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(160deg, rgba(126, 184, 168, 0.08), transparent 55%),
+    var(--bg-elevated);
+}
+
+.adapted-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.adapted-novel {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.adapted-title {
+  display: block;
+  color: inherit;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.adapted-summary {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #0b1015;
+  color: #c8d6e2;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+
+.adapted-time {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
 @media (min-width: 720px) {
   .novel-detail-head {
     grid-template-columns: 140px 1fr;

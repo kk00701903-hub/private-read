@@ -1,6 +1,6 @@
 import { zipSync, strToU8 } from 'fflate'
 import type { Episode, Novel } from '../types'
-import { getDraft } from './db'
+import { getDraft, listDrafts } from './db'
 import { fetchEpisodeMarkdown, stripFrontmatter } from './novels'
 
 export function parseFrontmatterTitle(raw: string): string | null {
@@ -52,6 +52,17 @@ export async function loadEpisodeEditable(
   }
 }
 
+export async function loadOriginalEpisode(
+  novel: Novel,
+  episode: Episode,
+): Promise<{ title: string; body: string }> {
+  const raw = await fetchEpisodeMarkdown(novel, episode.file)
+  return {
+    title: parseFrontmatterTitle(raw) || episode.title,
+    body: stripFrontmatter(raw),
+  }
+}
+
 function triggerDownload(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -91,6 +102,45 @@ export async function exportEpisodesAsMarkdown(
   triggerDownload(
     new Blob([new Uint8Array(zipped)], { type: 'application/zip' }),
     `${novel.slug}_episodes_${stamp}.zip`,
+  )
+  return { count: files.length, mode: 'zip' }
+}
+
+/** 각색(수정) 원고만 내보내기 */
+export async function exportDraftEpisodesAsMarkdown(
+  novel: Novel,
+  episodeIds: string[],
+): Promise<{ count: number; mode: 'file' | 'zip' }> {
+  const drafts = await listDrafts(novel.slug)
+  const wanted = new Set(episodeIds)
+  const files: { name: string; content: string }[] = []
+
+  for (const ep of novel.episodes) {
+    if (!wanted.has(ep.id)) continue
+    const draft = drafts.find((d) => d.episodeId === ep.id)
+    if (!draft) continue
+    const md = toExportMarkdown(draft.title, draft.body)
+    files.push({
+      name: filenameForEpisode(ep, draft.title).replace(/\.md$/, '_각색.md'),
+      content: md,
+    })
+  }
+
+  if (files.length === 0) throw new Error('내보낼 각색 원고가 없습니다.')
+
+  if (files.length === 1) {
+    const f = files[0]
+    triggerDownload(new Blob([f.content], { type: 'text/markdown;charset=utf-8' }), f.name)
+    return { count: 1, mode: 'file' }
+  }
+
+  const zipInput: Record<string, Uint8Array> = {}
+  for (const f of files) zipInput[f.name] = strToU8(f.content)
+  const zipped = zipSync(zipInput, { level: 6 })
+  const stamp = new Date().toISOString().slice(0, 10)
+  triggerDownload(
+    new Blob([new Uint8Array(zipped)], { type: 'application/zip' }),
+    `${novel.slug}_각색_${stamp}.zip`,
   )
   return { count: files.length, mode: 'zip' }
 }

@@ -80,6 +80,11 @@ function ensureSchema(db: Database) {
       PRIMARY KEY (novel_slug, episode_id)
     );
   `)
+  try {
+    db.run(`ALTER TABLE episode_drafts ADD COLUMN change_summary TEXT`)
+  } catch {
+    /* column already exists */
+  }
   db.run(`
     CREATE TABLE IF NOT EXISTS content_versions (
       novel_slug TEXT PRIMARY KEY,
@@ -225,6 +230,7 @@ export type EpisodeDraftRow = {
   title: string
   body: string
   updatedAt: number
+  changeSummary: string
 }
 
 export async function getDraft(
@@ -233,7 +239,7 @@ export async function getDraft(
 ): Promise<EpisodeDraftRow | null> {
   const db = await getDb()
   const stmt = db.prepare(`
-    SELECT novel_slug, episode_id, title, body, updated_at
+    SELECT novel_slug, episode_id, title, body, updated_at, change_summary
     FROM episode_drafts
     WHERE novel_slug = ? AND episode_id = ?
   `)
@@ -247,13 +253,14 @@ export async function getDraft(
     title: String(row.title ?? ''),
     body: String(row.body ?? ''),
     updatedAt: Number(row.updated_at) || 0,
+    changeSummary: String(row.change_summary ?? ''),
   }
 }
 
 export async function listDrafts(novelSlug: string): Promise<EpisodeDraftRow[]> {
   const db = await getDb()
   const stmt = db.prepare(`
-    SELECT novel_slug, episode_id, title, body, updated_at
+    SELECT novel_slug, episode_id, title, body, updated_at, change_summary
     FROM episode_drafts
     WHERE novel_slug = ?
     ORDER BY episode_id ASC
@@ -268,6 +275,30 @@ export async function listDrafts(novelSlug: string): Promise<EpisodeDraftRow[]> 
       title: String(r.title ?? ''),
       body: String(r.body ?? ''),
       updatedAt: Number(r.updated_at) || 0,
+      changeSummary: String(r.change_summary ?? ''),
+    })
+  }
+  stmt.free()
+  return rows
+}
+
+export async function listAllDrafts(): Promise<EpisodeDraftRow[]> {
+  const db = await getDb()
+  const stmt = db.prepare(`
+    SELECT novel_slug, episode_id, title, body, updated_at, change_summary
+    FROM episode_drafts
+    ORDER BY updated_at DESC
+  `)
+  const rows: EpisodeDraftRow[] = []
+  while (stmt.step()) {
+    const r = stmt.getAsObject() as Record<string, unknown>
+    rows.push({
+      novelSlug: String(r.novel_slug),
+      episodeId: String(r.episode_id),
+      title: String(r.title ?? ''),
+      body: String(r.body ?? ''),
+      updatedAt: Number(r.updated_at) || 0,
+      changeSummary: String(r.change_summary ?? ''),
     })
   }
   stmt.free()
@@ -276,20 +307,21 @@ export async function listDrafts(novelSlug: string): Promise<EpisodeDraftRow[]> 
 
 export async function listDraftMeta(
   novelSlug: string,
-): Promise<Record<string, { title: string; updatedAt: number }>> {
+): Promise<Record<string, { title: string; updatedAt: number; changeSummary: string }>> {
   const db = await getDb()
   const stmt = db.prepare(`
-    SELECT episode_id, title, updated_at
+    SELECT episode_id, title, updated_at, change_summary
     FROM episode_drafts
     WHERE novel_slug = ?
   `)
   stmt.bind([novelSlug])
-  const map: Record<string, { title: string; updatedAt: number }> = {}
+  const map: Record<string, { title: string; updatedAt: number; changeSummary: string }> = {}
   while (stmt.step()) {
     const r = stmt.getAsObject() as Record<string, unknown>
     map[String(r.episode_id)] = {
       title: String(r.title ?? ''),
       updatedAt: Number(r.updated_at) || 0,
+      changeSummary: String(r.change_summary ?? ''),
     }
   }
   stmt.free()
@@ -301,19 +333,22 @@ export async function upsertDraft(input: {
   episodeId: string
   title: string
   body: string
+  changeSummary?: string
 }): Promise<EpisodeDraftRow> {
   const db = await getDb()
   const updatedAt = Date.now()
+  const changeSummary = input.changeSummary ?? ''
   db.run(
     `
-    INSERT INTO episode_drafts (novel_slug, episode_id, title, body, updated_at)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO episode_drafts (novel_slug, episode_id, title, body, updated_at, change_summary)
+    VALUES (?, ?, ?, ?, ?, ?)
     ON CONFLICT(novel_slug, episode_id) DO UPDATE SET
       title=excluded.title,
       body=excluded.body,
-      updated_at=excluded.updated_at
+      updated_at=excluded.updated_at,
+      change_summary=excluded.change_summary
   `,
-    [input.novelSlug, input.episodeId, input.title, input.body, updatedAt],
+    [input.novelSlug, input.episodeId, input.title, input.body, updatedAt, changeSummary],
   )
   schedulePersist(db)
   return {
@@ -322,6 +357,7 @@ export async function upsertDraft(input: {
     title: input.title,
     body: input.body,
     updatedAt,
+    changeSummary,
   }
 }
 
