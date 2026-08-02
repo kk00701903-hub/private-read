@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T10:05:33.453Z",
+  "generatedAt": "2026-08-02T12:15:01.368Z",
   "novels": [
     {
       "slug": "bunrigugeo",
@@ -10,7 +10,7 @@
       "genre": "액션",
       "status": "연재중",
       "updatedAt": "2026-08-02",
-      "contentVersion": "2026-08-02-1785665132116",
+      "contentVersion": "2026-08-02-1785672900468",
       "episodeCount": 82,
       "episodes": [
         {
@@ -18,91 +18,91 @@
           "file": "001.md",
           "number": 1,
           "title": "1화 — 이름을 부르는 남자",
-          "wordCount": 6450
+          "wordCount": 6415
         },
         {
           "id": "002",
           "file": "002.md",
           "number": 2,
           "title": "2화 — 우리 딸이 복서가 된다고?",
-          "wordCount": 5685
+          "wordCount": 5686
         },
         {
           "id": "003",
           "file": "003.md",
           "number": 3,
           "title": "3화 — 체육관의 똥파리",
-          "wordCount": 6371
+          "wordCount": 6365
         },
         {
           "id": "004",
           "file": "004.md",
           "number": 4,
-          "title": "4화 — 동네 아저씨들의 평화주의 훈계",
-          "wordCount": 6440
+          "title": "4화 — 이자를 도로 받아 가오",
+          "wordCount": 6529
         },
         {
           "id": "005",
           "file": "005.md",
           "number": 5,
           "title": "5화 — 아빠의 하얀 타월",
-          "wordCount": 6382
+          "wordCount": 6565
         },
         {
           "id": "006",
           "file": "006.md",
           "number": 6,
           "title": "6화 — 국밥 배달 왔습니다",
-          "wordCount": 5708
+          "wordCount": 5726
         },
         {
           "id": "007",
           "file": "007.md",
           "number": 7,
-          "title": "7화 — 오늘",
-          "wordCount": 6541
+          "title": "7화 — 이 동네에서 이십 년을 돌았다",
+          "wordCount": 6494
         },
         {
           "id": "008",
           "file": "008.md",
           "number": 8,
           "title": "8화 — 인테리어 업자의 진짜 명함",
-          "wordCount": 6481
+          "wordCount": 6476
         },
         {
           "id": "009",
           "file": "009.md",
           "number": 9,
           "title": "9화 — 부치지 못한 열두 장",
-          "wordCount": 6559
+          "wordCount": 6561
         },
         {
           "id": "010",
           "file": "010.md",
           "number": 10,
           "title": "10화 — 주차장 정리 좀 하고 오겠습니다",
-          "wordCount": 6499
+          "wordCount": 6525
         },
         {
           "id": "011",
           "file": "011.md",
           "number": 11,
-          "title": "11화 — 열일곱",
-          "wordCount": 6487
+          "title": "11화 — 저 열일곱은, 오늘 우리가 가져간다",
+          "wordCount": 6551
         },
         {
           "id": "012",
           "file": "012.md",
           "number": 12,
-          "title": "12화 — 그날",
-          "wordCount": 6560
+          "title": "12화 — 물어볼 게 있어요",
+          "wordCount": 6458
         },
         {
           "id": "013",
           "file": "013.md",
           "number": 13,
           "title": "13화 — 나오가 정한다",
-          "wordCount": 6465
+          "wordCount": 6449
         },
         {
           "id": "014",
@@ -122,15 +122,15 @@
           "id": "016",
           "file": "016.md",
           "number": 16,
-          "title": "16화 — 통역",
+          "title": "16화 — 저는 압니다",
           "wordCount": 6488
         },
         {
           "id": "017",
           "file": "017.md",
           "number": 17,
-          "title": "17화 — 술잔",
-          "wordCount": 6439
+          "title": "17화 — 살려주세요",
+          "wordCount": 6434
         },
         {
           "id": "018",
@@ -143,7 +143,7 @@
           "id": "019",
           "file": "019.md",
           "number": 19,
-          "title": "19화 — 나흘",
+          "title": "19화 — 아빠 밥 먹었어, 였다",
           "wordCount": 6500
         },
         {
@@ -157,7 +157,7 @@
           "id": "021",
           "file": "021.md",
           "number": 21,
-          "title": "21화 — 나오의 답",
+          "title": "21화 — 저 낳을 거예요",
           "wordCount": 6417
         },
         {
@@ -165,13 +165,13 @@
           "file": "022.md",
           "number": 22,
           "title": "22화 — 아무도 오지 않았다",
-          "wordCount": 6351
+          "wordCount": 6386
         },
         {
           "id": "023",
           "file": "023.md",
           "number": 23,
-          "title": "23화 — 기사",
+          "title": "23화 — 산모 쪽 수액이에요",
           "wordCount": 6163
         },
         {
@@ -192,14 +192,14 @@
           "id": "026",
           "file": "026.md",
           "number": 26,
-          "title": "26화 — 필적",
+          "title": "26화 — 판 사람이 있다는 뜻이에요",
           "wordCount": 5919
         },
         {
           "id": "027",
           "file": "027.md",
           "number": 27,
-          "title": "27화 — 창고 둘",
+          "title": "27화 — 여긴 세지도 않았네",
           "wordCount": 5974
         },
         {
@@ -220,22 +220,22 @@
           "id": "030",
           "file": "030.md",
           "number": 30,
-          "title": "30화 — 잔당",
+          "title": "30화 — 압니다. 그래서 왔습니다",
           "wordCount": 6536
         },
         {
           "id": "031",
           "file": "031.md",
           "number": 31,
-          "title": "31화 — 항만",
-          "wordCount": 6568
+          "title": "31화 — 이래서 저희가 이 회사를 사는 겁니다",
+          "wordCount": 6555
         },
         {
           "id": "032",
           "file": "032.md",
           "number": 32,
-          "title": "32화 — 브로커",
-          "wordCount": 6647
+          "title": "32화 — 창문 하나가 열려 있었다",
+          "wordCount": 6640
         },
         {
           "id": "033",
@@ -248,7 +248,7 @@
           "id": "034",
           "file": "034.md",
           "number": 34,
-          "title": "34화 — 냉동 창고",
+          "title": "34화 — 이런 일이 처음이 아닙니다",
           "wordCount": 6400
         },
         {
@@ -262,7 +262,7 @@
           "id": "036",
           "file": "036.md",
           "number": 36,
-          "title": "36화 — 조용한 매수",
+          "title": "36화 — 우편번호가 같습니다",
           "wordCount": 6560
         },
         {
@@ -276,42 +276,42 @@
           "id": "038",
           "file": "038.md",
           "number": 38,
-          "title": "38화 — 누명",
-          "wordCount": 6021
+          "title": "38화 — 밖에서도 아는 사람이 있었다",
+          "wordCount": 6101
         },
         {
           "id": "039",
           "file": "039.md",
           "number": 39,
-          "title": "39화 — 뒷문",
-          "wordCount": 6116
+          "title": "39화 — 홀에 앉은 사람이 넷이었다",
+          "wordCount": 6580
         },
         {
           "id": "040",
           "file": "040.md",
           "number": 40,
-          "title": "40화 — 검은 수트",
-          "wordCount": 6517
+          "title": "40화 — 오늘은 이수진 씨 손입니다",
+          "wordCount": 6452
         },
         {
           "id": "041",
           "file": "041.md",
           "number": 41,
-          "title": "41화 — 두 번째 공",
-          "wordCount": 5778
+          "title": "41화 — 이름이었다. 번호가 아니었다",
+          "wordCount": 6011
         },
         {
           "id": "042",
           "file": "042.md",
           "number": 42,
           "title": "42화 — 이름",
-          "wordCount": 5690
+          "wordCount": 5989
         },
         {
           "id": "043",
           "file": "043.md",
           "number": 43,
-          "title": "43화 — 화요일",
+          "title": "43화 — 팔천 원 받았습니다",
           "wordCount": 4311
         },
         {
@@ -332,14 +332,14 @@
           "id": "046",
           "file": "046.md",
           "number": 46,
-          "title": "46화 — 관장님",
+          "title": "46화 — 그 장사, 폐업시켜라",
           "wordCount": 4694
         },
         {
           "id": "047",
           "file": "047.md",
           "number": 47,
-          "title": "47화 — 공문",
+          "title": "47화 — 2년 전에 서류에서 사라진 사람",
           "wordCount": 5438
         },
         {
@@ -353,7 +353,7 @@
           "id": "049",
           "file": "049.md",
           "number": 49,
-          "title": "49화 — 심부름",
+          "title": "49화 — 처음 가보는 주소였다",
           "wordCount": 4913
         },
         {
@@ -367,147 +367,147 @@
           "id": "051",
           "file": "051.md",
           "number": 51,
-          "title": "51화 — 지문",
+          "title": "51화 — 언제 채취된 거죠",
           "wordCount": 3995
         },
         {
           "id": "052",
           "file": "052.md",
           "number": 52,
-          "title": "52화 — 대광",
+          "title": "52화 — 거긴 벽이야. 벽은 안 민다",
           "wordCount": 5541
         },
         {
           "id": "053",
           "file": "053.md",
           "number": 53,
-          "title": "53화 — 하나",
+          "title": "53화 — 밝은 데서 볼게. 제대로",
           "wordCount": 4585
         },
         {
           "id": "054",
           "file": "054.md",
           "number": 54,
-          "title": "54화 — 첫 번째",
+          "title": "54화 — 링 밖에서는 처음이네",
           "wordCount": 4310
         },
         {
           "id": "055",
           "file": "055.md",
           "number": 55,
-          "title": "55화 — 엇갈림",
+          "title": "55화 — 아버지처럼은 안 있어",
           "wordCount": 4556
         },
         {
           "id": "056",
           "file": "056.md",
           "number": 56,
-          "title": "56화 — 뒷골목",
+          "title": "56화 — 붕대는 제 겁니다",
           "wordCount": 5139
         },
         {
           "id": "057",
           "file": "057.md",
           "number": 57,
-          "title": "57화 — 17번",
+          "title": "57화 — 여기서는 이름 안 물어봅니다",
           "wordCount": 5152
         },
         {
           "id": "058",
           "file": "058.md",
           "number": 58,
-          "title": "58화 — 사냥감",
+          "title": "58화 — 쫓는 쪽과 막는 쪽에 같은 마크",
           "wordCount": 4547
         },
         {
           "id": "059",
           "file": "059.md",
           "number": 59,
-          "title": "59화 — 두 겹",
+          "title": "59화 — 한 겹이면 나다. 두 겹이면",
           "wordCount": 4610
         },
         {
           "id": "060",
           "file": "060.md",
           "number": 60,
-          "title": "60화 — 구정민",
+          "title": "60화 — 표적이, 열두 살입니다",
           "wordCount": 5627
         },
         {
           "id": "061",
           "file": "061.md",
           "number": 61,
-          "title": "61화 — 수첩",
+          "title": "61화 — 나오는 그가 누군지 몰랐다",
           "wordCount": 5763
         },
         {
           "id": "062",
           "file": "062.md",
           "number": 62,
-          "title": "62화 — 등",
+          "title": "62화 — 그 손은 여기서 나갈 때 다섯이었는데",
           "wordCount": 5587
         },
         {
           "id": "063",
           "file": "063.md",
           "number": 63,
-          "title": "63화 — 태그",
+          "title": "63화 — 등 뒤를 한 번도 안 봤다",
           "wordCount": 6242
         },
         {
           "id": "064",
           "file": "064.md",
           "number": 64,
-          "title": "64화 — 부른다",
+          "title": "64화 — 김나오!",
           "wordCount": 5518
         },
         {
           "id": "065",
           "file": "065.md",
           "number": 65,
-          "title": "65화 — 나가는 값",
+          "title": "65화 — 저는 사람을 안 팝니다. 요즘은",
           "wordCount": 5778
         },
         {
           "id": "066",
           "file": "066.md",
           "number": 66,
-          "title": "66화 — 진짜 필적",
+          "title": "66화 — 같은 도장이었다",
           "wordCount": 5206
         },
         {
           "id": "067",
           "file": "067.md",
           "number": 67,
-          "title": "67화 — 국밥",
+          "title": "67화 — 혼자서, 숟가락을 들고 있었다",
           "wordCount": 4521
         },
         {
           "id": "068",
           "file": "068.md",
           "number": 68,
-          "title": "68화 — 어르신",
+          "title": "68화 — 국밥은 먹고 가게",
           "wordCount": 5409
         },
         {
           "id": "069",
           "file": "069.md",
           "number": 69,
-          "title": "69화 — 눈물",
+          "title": "69화 — 우리 보라고 켜놓은 거다",
           "wordCount": 4002
         },
         {
           "id": "070",
           "file": "070.md",
           "number": 70,
-          "title": "70화 — 장례",
+          "title": "70화 — 영정 앞에 국밥 한 그릇",
           "wordCount": 4935
         },
         {
           "id": "071",
           "file": "071.md",
           "number": 71,
-          "title": "71화 — 손가락",
+          "title": "71화 — 지키다가",
           "wordCount": 4678
         },
         {
@@ -521,7 +521,7 @@
           "id": "073",
           "file": "073.md",
           "number": 73,
-          "title": "73화 — 아들",
+          "title": "73화 — 내가 연다. 내 손으로",
           "wordCount": 4358
         },
         {
@@ -535,8 +535,8 @@
           "id": "075",
           "file": "075.md",
           "number": 75,
-          "title": "75화 — 적자",
-          "wordCount": 6424
+          "title": "75화 — 뒷모습이, 하나 더 있었다",
+          "wordCount": 6415
         },
         {
           "id": "076",
@@ -563,21 +563,21 @@
           "id": "079",
           "file": "079.md",
           "number": 79,
-          "title": "79화 — 이름을 말한다",
+          "title": "79화 — 김나오입니다",
           "wordCount": 6276
         },
         {
           "id": "080",
           "file": "080.md",
           "number": 80,
-          "title": "80화 — 맨손",
+          "title": "80화 — 오늘도 안 칩니다",
           "wordCount": 5283
         },
         {
           "id": "081",
           "file": "081.md",
           "number": 81,
-          "title": "81화 — 오하람",
+          "title": "81화 — 이름을 안 남긴 사람이",
           "wordCount": 5785
         },
         {
